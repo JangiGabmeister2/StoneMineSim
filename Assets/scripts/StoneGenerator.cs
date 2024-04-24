@@ -49,7 +49,7 @@ public class StoneGenerator : MonoBehaviour
 
     private IEnumerator TrySpawnStone()
     {
-        int r = Random.Range(0, _stonePrefabs.Length - 1);
+        int r = Random.Range(0, _stonePrefabs.Length);
 
         GameObject mound = Instantiate(_stonePrefabs[r], transform);
         mound.transform.position = FindRandomPosition();
