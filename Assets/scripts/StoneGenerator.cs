@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StoneGenerator : MonoBehaviour
@@ -13,6 +14,8 @@ public class StoneGenerator : MonoBehaviour
     [SerializeField] private int _maxStoneCount = 15;
     [SerializeField] private float _generationInterval = 5f;
 
+    private List<Vector2> _stonePositions = new List<Vector2>();
+    private List<Stone> _stones = new List<Stone>();
     private bool _isSpawning = false;
     private OperationState _opState;
 
@@ -28,6 +31,7 @@ public class StoneGenerator : MonoBehaviour
         switch (_opState)
         {
             case OperationState.Checking:
+                StoneBreak();
                 if (_stoneCount < _maxStoneCount)
                 {
                     _opState = OperationState.Creating;
@@ -51,8 +55,25 @@ public class StoneGenerator : MonoBehaviour
     {
         int r = Random.Range(0, _stonePrefabs.Length);
 
-        GameObject mound = Instantiate(_stonePrefabs[r], transform);
-        mound.transform.position = FindRandomPosition();
+        Stone mound = Instantiate(_stonePrefabs[r], transform).GetComponent<Stone>();
+        _stones.Add(mound);
+
+        Vector2 randPos = Vector2.zero;
+
+        foreach (Vector2 pos in _stonePositions)
+        {
+            randPos = FindRandomPosition();
+
+            if (randPos != pos)
+            {
+                continue;
+            }
+
+            yield return null;
+        }
+
+        mound.transform.position = randPos;
+        _stonePositions.Add(randPos);
 
         yield return new WaitForSeconds(_generationInterval);
     }
@@ -64,5 +85,20 @@ public class StoneGenerator : MonoBehaviour
             Random.Range(4, -9));
 
         return pos;
+    }
+
+    private void StoneBreak()
+    {
+        for (int i = 0; i < _stones.Count; i++)
+        {
+            if (_stones[i].health <= 0)
+            {
+                _stonePositions.RemoveAt(i);
+
+                Destroy(_stones[i].gameObject);
+
+                _stones.RemoveAt(i);
+            }
+        }
     }
 }
