@@ -183,7 +183,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61406ad7b79280f4c8b9024b62d4d565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 5
+  health: 5
+  pebbles:
+  - {fileID: 5773081264622063745, guid: c3ed4dfd9b195754b9052dca371699ca, type: 3}
+  - {fileID: 6151594348769494425, guid: e047cf5ff5db4f048b440a059ad6e651, type: 3}
+  - {fileID: 5357402412886216916, guid: ffb9f14a4c41b194393ef29fcbfce8ce, type: 3}
 --- !u!61 &-5106861377975970854
 BoxCollider2D:
   m_ObjectHideFlags: 0

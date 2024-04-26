@@ -16,6 +16,7 @@ public class StoneGenerator : MonoBehaviour
 
     private List<Vector2> _stonePositions = new List<Vector2>();
     private List<Stone> _stones = new List<Stone>();
+
     private bool _isSpawning = false;
     private OperationState _opState;
 
@@ -30,6 +31,7 @@ public class StoneGenerator : MonoBehaviour
     {
         switch (_opState)
         {
+            //checking state - checks whether a stone has been broken therefore needs to refill the area.
             case OperationState.Checking:
                 StoneBreak();
                 if (_stoneCount < _maxStoneCount)
@@ -37,6 +39,7 @@ public class StoneGenerator : MonoBehaviour
                     _opState = OperationState.Creating;
                 }
                 break;
+                //creating state - creates stone mounds in the area.
             case OperationState.Creating:
                 while (_stoneCount < _maxStoneCount && !_isSpawning)
                 {
@@ -51,6 +54,7 @@ public class StoneGenerator : MonoBehaviour
         }
     }
 
+    //attempts to spawn a stone mound in the area
     private IEnumerator TrySpawnStone()
     {
         int r = Random.Range(0, _stonePrefabs.Length);
@@ -78,6 +82,7 @@ public class StoneGenerator : MonoBehaviour
         yield return new WaitForSeconds(_generationInterval);
     }
 
+    //creates random position in the area
     private Vector2 FindRandomPosition()
     {
         Vector2 pos = new Vector2(
@@ -87,12 +92,17 @@ public class StoneGenerator : MonoBehaviour
         return pos;
     }
 
+    //checks all stone health and deletes it if it has no health
     private void StoneBreak()
     {
         for (int i = 0; i < _stones.Count; i++)
         {
             if (_stones[i].health <= 0)
             {
+                ScoreManager.instance.IncreaseDecreaseStone(1);
+
+                _stones[i].SpawnPebbles();
+
                 _stonePositions.RemoveAt(i);
 
                 Destroy(_stones[i].gameObject);
