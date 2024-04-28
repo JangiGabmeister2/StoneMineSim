@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Stone : MonoBehaviour
@@ -6,13 +7,34 @@ public class Stone : MonoBehaviour
 
     public GameObject[] pebbles;
 
+    private int _healthBase = 0;
+
+    private void Start()
+    {
+        _healthBase = health;
+    }
+
     private void OnMouseDown()
     {
-        //particles on mining
-        //reduces health of stone
-        health--;
-        //mine threshold reach = break, spawn pebbles as items
+        StartCoroutine("DecreaseHealth");
+    }
 
+    private IEnumerator DecreaseHealth()
+    {
+        while (health > 0)
+        {
+            health--;
+
+            yield return new WaitForSeconds(1);
+        }
+
+    }
+
+    private void OnMouseUp()
+    {
+        StopCoroutine("DecreaseHealth");
+
+        health = _healthBase;
     }
 
     private void OnMouseEnter()
